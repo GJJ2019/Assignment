@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class AuthRepository {
   Future<UserModel?> signInWithGoogle();
+  Future<UserModel?> signInAnonymously();
   Future<void> signOut();
   UserModel? get currentUser;
   Stream<UserModel?> get authStateChanges;
@@ -145,6 +146,35 @@ class HybridAuthRepository implements AuthRepository {
         return user;
       } else {
         throw Exception('Firebase login returned no user profile.');
+      }
+    } catch (e) {
+      throw Exception(_handleAuthError(e));
+    }
+  }
+
+  @override
+  Future<UserModel?> signInAnonymously() async {
+    if (_useMock) {
+      await Future.delayed(const Duration(milliseconds: 1000)); // Simulate network latency
+      _mockUser = const UserModel(
+        uid: 'mock_guest_uid_999',
+        displayName: 'Guest User',
+        email: 'guest@alive.app',
+        photoUrl: null,
+      );
+      _authStateController.add(_mockUser);
+      return _mockUser;
+    }
+
+    try {
+      final UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
+      final firebaseUser = userCredential.user;
+      if (firebaseUser != null) {
+        final user = UserModel.fromFirebaseUser(firebaseUser);
+        _authStateController.add(user);
+        return user;
+      } else {
+        throw Exception('Anonymous login returned no user profile.');
       }
     } catch (e) {
       throw Exception(_handleAuthError(e));

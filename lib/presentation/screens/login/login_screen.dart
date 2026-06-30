@@ -168,16 +168,21 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             // Animated Google Login Button
                             AnimatedSwitcher(
                               duration: const Duration(milliseconds: 300),
-                              child: isLoading
-                                  ? const Column(
-                                      key: ValueKey('loading'),
+                              child: state is AuthLoading
+                                  ? Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        CircularProgressIndicator(
-                                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                                        const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                                          ),
                                         ),
-                                        SizedBox(height: 16),
+                                        const SizedBox(width: 12),
                                         Text(
-                                          'Connecting to Google...',
+                                          'Connecting...',
                                           style: TextStyle(
                                             color: AppColors.textSecondary,
                                             fontWeight: FontWeight.w500,
@@ -185,57 +190,83 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                         ),
                                       ],
                                     )
-                                  : GestureDetector(
-                                      key: const ValueKey('button'),
-                                      onTap: () {
-                                        context.read<AuthCubit>().loginWithGoogle();
-                                      },
-                                      child: MouseRegion(
-                                        cursor: SystemMouseCursors.click,
-                                        child: AnimatedContainer(
-                                          duration: const Duration(milliseconds: 200),
-                                          width: double.infinity,
-                                          height: 56.h,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(28.h),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black.withOpacity(0.08),
-                                                blurRadius: 10,
-                                                offset: const Offset(0, 4),
+                                  : Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        GestureDetector(
+                                          key: const ValueKey('button'),
+                                          onTap: () {
+                                            context.read<AuthCubit>().loginWithGoogle();
+                                          },
+                                          child: MouseRegion(
+                                            cursor: SystemMouseCursors.click,
+                                            child: AnimatedContainer(
+                                              duration: const Duration(milliseconds: 200),
+                                              width: double.infinity,
+                                              height: 56.h,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.circular(28.h),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black.withOpacity(0.08),
+                                                    blurRadius: 10,
+                                                    offset: const Offset(0, 4),
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
-                                           child: Center(
-                                            child: FittedBox(
-                                              fit: BoxFit.scaleDown,
-                                              child: Padding(
-                                                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                     Container(
-                                                       width: 20.w,
-                                                       height: 20.w,
-                                                       margin: EdgeInsets.only(right: 12.w),
-                                                       child: SvgPicture.asset(
-                                                         'assets/icons/google.svg',
-                                                         width: 20.w,
-                                                         height: 20.w,
-                                                       ),
-                                                     ),
-                                                    Text(
-                                                      'Continue with Google',
-                                                      style: AppTextStyles.buttonText(color: Colors.black),
+                                              child: Center(
+                                                child: FittedBox(
+                                                  fit: BoxFit.scaleDown,
+                                                  child: Padding(
+                                                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Container(
+                                                          width: 20.w,
+                                                          height: 20.w,
+                                                          margin: EdgeInsets.only(right: 12.w),
+                                                          child: SvgPicture.asset(
+                                                            'assets/icons/google.svg',
+                                                            width: 20.w,
+                                                            height: 20.w,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          'Continue with Google',
+                                                          style: AppTextStyles.buttonText(color: Colors.black),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
+                                        SizedBox(height: 18.h),
+                                        GestureDetector(
+                                          onTap: () {
+                                            context.read<AuthCubit>().loginAnonymously();
+                                          },
+                                          child: MouseRegion(
+                                            cursor: SystemMouseCursors.click,
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(vertical: 8.h),
+                                              child: Text(
+                                                'Continue as Guest',
+                                                style: TextStyle(
+                                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.w600,
+                                                  decoration: TextDecoration.underline,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                             ),
                           ],

@@ -34,6 +34,19 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  Future<void> loginAnonymously() async {
+    emit(AuthLoading());
+    try {
+      final user = await _authRepository.signInAnonymously();
+      if (user == null) {
+        emit(Unauthenticated());
+      }
+    } catch (e) {
+      final cleanMessage = e.toString().replaceFirst('Exception: ', '');
+      emit(AuthError(cleanMessage));
+    }
+  }
+
   Future<void> logout() async {
     emit(AuthLoading());
     try {
