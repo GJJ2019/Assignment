@@ -12,13 +12,16 @@ import 'logic/cubits/stream/stream_cubit.dart';
 import 'presentation/screens/splash/splash_screen.dart';
 import 'core/theme/app_theme.dart';
 import 'logic/cubits/theme/theme_cubit.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase Core
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   } catch (e) {
     debugPrint('Firebase Core init failed: $e. Falling back to Mock Auth.');
   }
