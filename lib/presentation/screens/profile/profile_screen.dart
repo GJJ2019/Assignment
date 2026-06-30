@@ -9,6 +9,66 @@ import '../../../logic/cubits/auth/auth_state.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  Future<bool?> _showLogoutConfirmationDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).cardColor,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.h),
+            side: BorderSide(color: Theme.of(context).dividerColor, width: 0.5.w),
+          ),
+          title: Text(
+            'Log Out',
+            style: AppTextStyles.headingSmall(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to log out of your account?',
+            style: AppTextStyles.bodyMedium(
+              color: Theme.of(context).hintColor,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.sp,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.h),
+                ),
+                elevation: 0,
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+              ),
+              child: Text(
+                'Log Out',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14.sp,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthCubit, AuthState>(
@@ -109,8 +169,11 @@ class ProfileScreen extends StatelessWidget {
 
               // Logout Button
               GestureDetector(
-                onTap: () {
-                  context.read<AuthCubit>().logout();
+                onTap: () async {
+                  final confirm = await _showLogoutConfirmationDialog(context);
+                  if (confirm == true && context.mounted) {
+                    context.read<AuthCubit>().logout();
+                  }
                 },
                 child: MouseRegion(
                   cursor: SystemMouseCursors.click,
