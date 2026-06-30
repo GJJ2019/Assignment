@@ -76,8 +76,8 @@ class HybridAuthRepository implements AuthRepository {
     }
 
     final message = e.toString();
-    if (message.contains('Google Sign-In cancelled') ||
-        message.contains('cancelled by user') ||
+    if (message.contains('canceled') ||
+        message.contains('cancelled') ||
         message.contains('12501')) {
       return 'Sign-In cancelled by user.';
     }
