@@ -66,7 +66,9 @@ class HybridAuthRepository implements AuthRepository {
 
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.authenticate();
-      if (googleUser == null) return null;
+      if (googleUser == null) {
+        throw Exception('Google Sign-In cancelled by user');
+      }
 
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
@@ -79,13 +81,12 @@ class HybridAuthRepository implements AuthRepository {
         final user = UserModel.fromFirebaseUser(firebaseUser);
         _authStateController.add(user);
         return user;
+      } else {
+        throw Exception('Firebase login returned no user profile');
       }
     } catch (e) {
-      // If real authentication fails (e.g., config error), fallback to mock sign-in for demonstration
-      _useMock = true;
-      return signInWithGoogle();
+      rethrow;
     }
-    return null;
   }
 
   @override
@@ -95,8 +96,12 @@ class HybridAuthRepository implements AuthRepository {
       _authStateController.add(null);
       return;
     }
-    await FirebaseAuth.instance.signOut();
-    await _googleSignIn.signOut();
-    _authStateController.add(null);
+    try {
+      await FirebaseAuth.instance.signOut();
+      await _googleSignIn.signOut();
+      _authStateController.add(null);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

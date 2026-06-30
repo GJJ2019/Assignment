@@ -18,6 +18,8 @@ import 'widgets/custom_bottom_nav.dart';
 import 'widgets/location_pills.dart';
 import 'widgets/stream_grid_item.dart';
 
+import '../login/login_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -43,47 +45,69 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NavigationCubit, NavigationState>(
-      builder: (context, navState) {
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          body: SafeArea(
-            bottom: false,
-            child: BlocListener<NavigationCubit, NavigationState>(
-              listener: (context, state) {
-                // Ensure page jumps/animates only if out of sync
-                if (_pageController.hasClients &&
-                    _pageController.page?.round() != state.selectedIndex) {
-                  _pageController.animateToPage(
-                    state.selectedIndex,
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.fastOutSlowIn,
-                  );
-                }
-              },
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  context.read<NavigationCubit>().setTab(index);
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is Unauthenticated) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const LoginScreen()),
+          );
+        } else if (state is AuthError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                state.message,
+                style: const TextStyle(color: Colors.white),
+              ),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+              margin: EdgeInsets.all(16.w),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+          );
+        }
+      },
+      child: BlocBuilder<NavigationCubit, NavigationState>(
+        builder: (context, navState) {
+          return Scaffold(
+            backgroundColor: AppColors.background,
+            body: SafeArea(
+              bottom: false,
+              child: BlocListener<NavigationCubit, NavigationState>(
+                listener: (context, state) {
+                  // Ensure page jumps/animates only if out of sync
+                  if (_pageController.hasClients &&
+                      _pageController.page?.round() != state.selectedIndex) {
+                    _pageController.animateToPage(
+                      state.selectedIndex,
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.fastOutSlowIn,
+                    );
+                  }
                 },
-                children: [
-                  _buildLiveFeed(),
-                  const PartyScreen(),
-                  const GoLiveScreen(),
-                  const ChatsScreen(),
-                  const ProfileScreen(),
-                ],
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    context.read<NavigationCubit>().setTab(index);
+                  },
+                  children: [
+                    _buildLiveFeed(),
+                    const PartyScreen(),
+                    const GoLiveScreen(),
+                    const ChatsScreen(),
+                    const ProfileScreen(),
+                  ],
+                ),
               ),
             ),
-          ),
-          bottomNavigationBar: CustomBottomNav(
-            selectedIndex: navState.selectedIndex,
-            onTap: (index) {
-              context.read<NavigationCubit>().setTab(index);
-            },
-          ),
-        );
-      },
+            bottomNavigationBar: CustomBottomNav(
+              selectedIndex: navState.selectedIndex,
+              onTap: (index) {
+                context.read<NavigationCubit>().setTab(index);
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 
