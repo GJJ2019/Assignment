@@ -42,10 +42,10 @@ class LocationPills extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
               decoration: BoxDecoration(
                 gradient: isSelected ? AppColors.primaryGradient : null,
-                color: isSelected ? null : AppColors.surface,
+                color: isSelected ? null : Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(20.h),
                 border: Border.all(
-                  color: isSelected ? Colors.transparent : AppColors.border,
+                  color: isSelected ? Colors.transparent : Theme.of(context).dividerColor,
                   width: 1.w,
                 ),
                 boxShadow: isSelected
@@ -69,7 +69,7 @@ class LocationPills extends StatelessWidget {
                   Text(
                     name,
                     style: AppTextStyles.bodySmall(
-                      color: isSelected ? Colors.black : AppColors.textPrimary,
+                      color: isSelected ? Colors.black : Theme.of(context).colorScheme.onBackground,
                     ).copyWith(
                       fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                     ),

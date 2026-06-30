@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'core/constants/app_colors.dart';
 import 'data/repositories/auth_repository.dart';
 import 'data/repositories/stream_repository.dart';
@@ -9,9 +10,18 @@ import 'logic/cubits/auth/auth_cubit.dart';
 import 'logic/cubits/navigation/navigation_cubit.dart';
 import 'logic/cubits/stream/stream_cubit.dart';
 import 'presentation/screens/splash/splash_screen.dart';
+import 'core/theme/app_theme.dart';
+import 'logic/cubits/theme/theme_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase Core
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint('Firebase Core init failed: $e. Falling back to Mock Auth.');
+  }
 
   // Initialize Google Sign-In v7+
   try {
@@ -70,21 +80,21 @@ class MyApp extends StatelessWidget {
           BlocProvider<StreamCubit>(
             create: (context) => StreamCubit(streamRepository),
           ),
-        ],
-        child: MaterialApp(
-          title: 'Alive',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData.dark().copyWith(
-            scaffoldBackgroundColor: AppColors.background,
-            primaryColor: AppColors.primary,
-            colorScheme: const ColorScheme.dark(
-              primary: AppColors.primary,
-              secondary: AppColors.primaryLight,
-              surface: AppColors.surface,
-              error: AppColors.error,
-            ),
+          BlocProvider<ThemeCubit>(
+            create: (context) => ThemeCubit(),
           ),
-          home: const SplashScreen(),
+        ],
+        child: BlocBuilder<ThemeCubit, ThemeMode>(
+          builder: (context, themeMode) {
+            return MaterialApp(
+              title: 'Alive',
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: themeMode,
+              home: const SplashScreen(),
+            );
+          },
         ),
       ),
     );

@@ -24,7 +24,7 @@ class ProfileScreen extends StatelessWidget {
         }
 
         return Container(
-          color: AppColors.background,
+          color: Theme.of(context).scaffoldBackgroundColor,
           padding: EdgeInsets.all(24.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -34,9 +34,9 @@ class ProfileScreen extends StatelessWidget {
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(vertical: 32.h, horizontal: 24.w),
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(24.r ?? 24.h),
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(color: Theme.of(context).dividerColor),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.2),
@@ -87,19 +87,19 @@ class ProfileScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildStat('Followers', '1.4K'),
+                        _buildStat(context, 'Followers', '1.4K'),
                         Container(
                           width: 1.w,
                           height: 30.h,
-                          color: AppColors.border,
+                          color: Theme.of(context).dividerColor,
                         ),
-                        _buildStat('Following', '186'),
+                        _buildStat(context, 'Following', '186'),
                         Container(
                           width: 1.w,
                           height: 30.h,
-                          color: AppColors.border,
+                          color: Theme.of(context).dividerColor,
                         ),
-                        _buildStat('Live Level', 'Lv. 12'),
+                        _buildStat(context, 'Live Level', 'Lv. 12'),
                       ],
                     ),
                   ],
@@ -149,7 +149,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStat(String label, String value) {
+  Widget _buildStat(BuildContext context, String label, String value) {
     return Column(
       children: [
         Text(
@@ -159,7 +159,7 @@ class ProfileScreen extends StatelessWidget {
         SizedBox(height: 4.h),
         Text(
           label,
-          style: AppTextStyles.bodySmall(color: AppColors.textSecondary),
+          style: AppTextStyles.bodySmall(color: Theme.of(context).hintColor),
         ),
       ],
     );

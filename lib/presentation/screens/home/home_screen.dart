@@ -13,6 +13,7 @@ import '../party/party_screen.dart';
 import '../go_live/go_live_screen.dart';
 import '../chats/chats_screen.dart';
 import '../profile/profile_screen.dart';
+import '../../../logic/cubits/theme/theme_cubit.dart';
 import 'widgets/custom_bottom_nav.dart';
 import 'widgets/location_pills.dart';
 import 'widgets/stream_grid_item.dart';
@@ -191,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 'Alive',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onBackground,
                   fontFamily: 'Outfit',
                   fontSize: 22.sp,
                   fontWeight: FontWeight.w900,
@@ -200,9 +201,27 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
 
-          // Right side: Notifications with badge + User Avatar
+          // Right side: Theme toggle + Notifications with badge + User Avatar
           Row(
             children: [
+              // Theme Toggle Button
+              BlocBuilder<ThemeCubit, ThemeMode>(
+                builder: (context, themeMode) {
+                  final isDark = themeMode == ThemeMode.dark;
+                  return IconButton(
+                    icon: Icon(
+                      isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                      color: Theme.of(context).colorScheme.onBackground,
+                      size: 22.sp,
+                    ),
+                    onPressed: () {
+                      context.read<ThemeCubit>().toggleTheme();
+                    },
+                  );
+                },
+              ),
+              SizedBox(width: 4.w),
+
               // Notification icon with badge
               Stack(
                 clipBehavior: Clip.none,
@@ -210,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   IconButton(
                     icon: Icon(
                       Icons.notifications_outlined,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onBackground,
                       size: 24.sp,
                     ),
                     onPressed: () {},
@@ -236,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: 4.w),
               // User Avatar
               BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, state) {
@@ -295,7 +314,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     cat,
                     style: TextStyle(
-                      color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                      color: isSelected ? AppColors.primary : Theme.of(context).hintColor,
                       fontSize: 16.sp,
                       fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                     ),

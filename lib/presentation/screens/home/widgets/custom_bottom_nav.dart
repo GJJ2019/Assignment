@@ -17,9 +17,9 @@ class CustomBottomNav extends StatelessWidget {
     return Container(
       height: 64.h + Responsive.safeAreaBottom,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).cardColor,
         border: Border(
-          top: BorderSide(color: AppColors.border, width: 0.5.w),
+          top: BorderSide(color: Theme.of(context).dividerColor, width: 0.5.w),
         ),
       ),
       padding: EdgeInsets.only(bottom: Responsive.safeAreaBottom),
@@ -29,12 +29,12 @@ class CustomBottomNav extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(0, Icons.home_rounded, 'Home'),
-              _buildNavItem(1, Icons.explore_rounded, 'Party'),
+              _buildNavItem(context, 0, Icons.home_rounded, 'Home'),
+              _buildNavItem(context, 1, Icons.explore_rounded, 'Party'),
               // Empty space for middle button
               SizedBox(width: 52.w),
-              _buildNavItem(3, Icons.forum_rounded, 'Chats'),
-              _buildNavItem(4, Icons.person_rounded, 'Profile'),
+              _buildNavItem(context, 3, Icons.forum_rounded, 'Chats'),
+              _buildNavItem(context, 4, Icons.person_rounded, 'Profile'),
             ],
           ),
 
@@ -77,7 +77,7 @@ class CustomBottomNav extends StatelessWidget {
                       Text(
                         'Go Live',
                         style: TextStyle(
-                          color: selectedIndex == 2 ? AppColors.primary : AppColors.textSecondary,
+                          color: selectedIndex == 2 ? AppColors.primary : Theme.of(context).hintColor,
                           fontSize: 10.sp,
                           fontWeight: FontWeight.bold,
                         ),
@@ -93,7 +93,7 @@ class CustomBottomNav extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label) {
+  Widget _buildNavItem(BuildContext context, int index, IconData icon, String label) {
     final bool isSelected = selectedIndex == index;
     return GestureDetector(
       onTap: () => onTap(index),
@@ -107,14 +107,14 @@ class CustomBottomNav extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                color: isSelected ? AppColors.primary : Theme.of(context).hintColor,
                 size: 22.sp,
               ),
               SizedBox(height: 4.h),
               Text(
                 label,
                 style: TextStyle(
-                  color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                  color: isSelected ? AppColors.primary : Theme.of(context).hintColor,
                   fontSize: 10.sp,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
