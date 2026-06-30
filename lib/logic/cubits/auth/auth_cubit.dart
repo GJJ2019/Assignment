@@ -29,7 +29,8 @@ class AuthCubit extends Cubit<AuthState> {
         emit(Unauthenticated());
       }
     } catch (e) {
-      emit(AuthError('Google Login failed: ${e.toString()}'));
+      final cleanMessage = e.toString().replaceFirst('Exception: ', '');
+      emit(AuthError(cleanMessage));
     }
   }
 
@@ -38,7 +39,8 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       await _authRepository.signOut();
     } catch (e) {
-      emit(AuthError('Logout failed: ${e.toString()}'));
+      final cleanMessage = e.toString().replaceFirst('Exception: ', '');
+      emit(AuthError(cleanMessage));
     }
   }
 

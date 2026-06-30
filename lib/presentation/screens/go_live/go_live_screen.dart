@@ -9,7 +9,7 @@ class GoLiveScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.background,
+      color: Theme.of(context).scaffoldBackgroundColor,
       padding: EdgeInsets.all(24.w),
       child: Center(
         child: Column(
@@ -43,7 +43,7 @@ class GoLiveScreen extends StatelessWidget {
             Text(
               'Set up your broadcast details, toggle filters, and start streaming to your audience in high definition.',
               textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMedium(color: AppColors.textSecondary),
+              style: AppTextStyles.bodyMedium(color: Theme.of(context).hintColor),
             ),
             SizedBox(height: 32.h),
             ElevatedButton(

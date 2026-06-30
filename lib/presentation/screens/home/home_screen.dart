@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: BlocBuilder<NavigationCubit, NavigationState>(
         builder: (context, navState) {
           return Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             body: SafeArea(
               bottom: false,
               child: BlocListener<NavigationCubit, NavigationState>(
@@ -155,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: RefreshIndicator(
                   color: AppColors.primary,
-                  backgroundColor: AppColors.surface,
+                  backgroundColor: Theme.of(context).cardColor,
                   onRefresh: () => context.read<StreamCubit>().loadStreams(),
                   child: state.filteredStreams.isEmpty
                       ? _buildEmptyState()
@@ -370,18 +370,18 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Icon(
             Icons.live_tv_rounded,
-            color: AppColors.textMuted,
+            color: Theme.of(context).hintColor,
             size: 48.sp,
           ),
           SizedBox(height: 16.h),
           Text(
             'No Active Streams Found',
-            style: AppTextStyles.bodyLarge(color: AppColors.textSecondary),
+            style: AppTextStyles.bodyLarge(color: Theme.of(context).colorScheme.onBackground),
           ),
           SizedBox(height: 8.h),
           Text(
             'Try switching your country filter or checking other categories.',
-            style: AppTextStyles.bodySmall(color: AppColors.textMuted),
+            style: AppTextStyles.bodySmall(color: Theme.of(context).hintColor),
             textAlign: TextAlign.center,
           ),
         ],

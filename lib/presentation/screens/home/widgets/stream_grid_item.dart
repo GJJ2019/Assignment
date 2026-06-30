@@ -17,9 +17,9 @@ class StreamGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16.r ?? 16.h),
-        border: Border.all(color: AppColors.border, width: 0.5.w),
+        border: Border.all(color: Theme.of(context).dividerColor, width: 0.5.w),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.15),
@@ -37,13 +37,17 @@ class StreamGridItem extends StatelessWidget {
               stream.imageUrl,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => Container(
-                color: AppColors.surfaceLight,
-                child: const Icon(Icons.broken_image, color: AppColors.textMuted),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.surfaceLight
+                    : const Color(0xFFE2E8F0),
+                child: Icon(Icons.broken_image, color: Theme.of(context).hintColor),
               ),
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) return child;
                 return Container(
-                  color: AppColors.surfaceLight,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.surfaceLight
+                      : const Color(0xFFE2E8F0),
                   child: const Center(
                     child: CircularProgressIndicator(
                       strokeWidth: 2,

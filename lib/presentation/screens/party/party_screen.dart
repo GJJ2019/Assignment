@@ -9,7 +9,7 @@ class PartyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.background,
+      color: Theme.of(context).scaffoldBackgroundColor,
       padding: EdgeInsets.all(24.w),
       child: Center(
         child: Column(
@@ -19,8 +19,8 @@ class PartyScreen extends StatelessWidget {
               padding: EdgeInsets.all(20.w),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.surface,
-                border: Border.all(color: AppColors.border),
+                color: Theme.of(context).cardColor,
+                border: Border.all(color: Theme.of(context).dividerColor),
               ),
               child: Icon(
                 Icons.explore_rounded,
@@ -37,7 +37,7 @@ class PartyScreen extends StatelessWidget {
             Text(
               'Join group live streams, voice rooms, and interactive gaming sessions with people worldwide.',
               textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMedium(color: AppColors.textSecondary),
+              style: AppTextStyles.bodyMedium(color: Theme.of(context).hintColor),
             ),
           ],
         ),
