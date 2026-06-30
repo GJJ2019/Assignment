@@ -41,37 +41,62 @@ class HybridAuthRepository implements AuthRepository {
 
   String _handleAuthError(dynamic e) {
     if (e is FirebaseAuthException) {
-      switch (e.code) {
-        case 'invalid-credential':
-          return 'The login credentials are invalid or have expired.';
-        case 'user-disabled':
-          return 'This user account has been disabled by an administrator.';
-        case 'operation-not-allowed':
-          return 'Google Sign-In is not enabled on the authentication server.';
-        case 'network-request-failed':
-          return 'Network request failed. Please check your internet connection.';
-        default:
-          return e.message ?? 'A Firebase authentication error occurred.';
+      final code = e.code.toLowerCase();
+      if (code == 'invalid-credential') {
+        return 'The login credentials are invalid or have expired.';
       }
+      if (code == 'user-disabled') {
+        return 'This user account has been disabled by an administrator.';
+      }
+      if (code == 'operation-not-allowed') {
+        return 'Google Sign-In is not enabled on the authentication server.';
+      }
+      if (code == 'network-request-failed') {
+        return 'Network request failed. Please check your internet connection.';
+      }
+      if (code == 'invalid-api-key') {
+        return 'Firebase API key configuration is invalid.';
+      }
+      return e.message ?? 'A Firebase authentication error occurred.';
     } else if (e is PlatformException) {
-      switch (e.code) {
-        case 'sign_in_failed':
-          return 'Google Sign-In failed. Please check your device configuration settings.';
-        case 'network_error':
-          return 'Network connection error. Please check your internet connection.';
-        case 'developer_error':
-          return 'Developer setup error. Please check your SHA-1 key configuration.';
-        case 'sign_in_canceled':
-          return 'Sign-In cancelled by user.';
-        default:
-          return e.message ?? 'Google Sign-In failed (${e.code}).';
+      final code = e.code.toLowerCase();
+      if (code == 'sign_in_canceled' || code == '12501') {
+        return 'Sign-In cancelled by user.';
       }
+      if (code == 'network_error' || code == '7') {
+        return 'Network connection error. Please check your internet connection.';
+      }
+      if (code == 'developer_error' || code == '10') {
+        return 'Developer configuration error. Please verify SHA-1 fingerprints in the Firebase Console.';
+      }
+      if (code == 'sign_in_failed' || code == '12500') {
+        return 'Google Sign-In failed. Please verify your device Google Play services.';
+      }
+      return e.message ?? 'Google Sign-In failed (${e.code}).';
     }
 
     final message = e.toString();
-    if (message.contains('Google Sign-In cancelled') || message.contains('cancelled by user')) {
+    if (message.contains('Google Sign-In cancelled') ||
+        message.contains('cancelled by user') ||
+        message.contains('12501')) {
       return 'Sign-In cancelled by user.';
     }
+    if (message.contains('10') ||
+        message.contains('developer_error') ||
+        message.contains('DeveloperError')) {
+      return 'Developer configuration error. Please verify SHA-1 fingerprints in the Firebase Console.';
+    }
+    if (message.contains('7') ||
+        message.contains('network_error') ||
+        message.contains('NetworkError')) {
+      return 'Network connection error. Please check your internet connection.';
+    }
+    if (message.contains('12500') ||
+        message.contains('sign_in_failed') ||
+        message.contains('SignInFailed')) {
+      return 'Google Sign-In failed. Please verify Google Play services on your device.';
+    }
+
     return 'Authentication error: $message';
   }
 
